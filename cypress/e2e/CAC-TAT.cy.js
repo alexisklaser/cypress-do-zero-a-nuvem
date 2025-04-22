@@ -9,12 +9,15 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   });
 
   it('Informar campos obrigatórios', () => {
+    cy.clock();
     cy.get('#firstName').type('Aléxis')
       .get('#lastName').type('Klaser')
       .get('#email').type('klaser403@gmail.com')
       .get('#open-text-area').type('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', { delay: 0 })
       .get('.button').click()
       .get('.success').should('be.visible');
+    cy.tick(3000);
+    cy.get('.success').should('not.be.visible');
   });
 
   it('Email com formato inválido', () => {
@@ -180,5 +183,22 @@ describe('Central de Atendimento ao Cliente TAT', () => {
      cy.get('#title').contains('CAC TAT - Política de Privacidade')
      cy.go('back'); //volta para a página original
     });
+
+    it('Exibe e oculta as mensagens de sucesso e erro usando .invoke()', () => {
+      cy.get('.success')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible')
+        .and('contain', 'Mensagem enviada com sucesso.')
+        .invoke('hide')
+        .should('not.be.visible')
+      cy.get('.error')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible')
+        .and('contain', 'Valide os campos obrigatórios!')
+        .invoke('hide')
+        .should('not.be.visible')
+    })
   });
   
